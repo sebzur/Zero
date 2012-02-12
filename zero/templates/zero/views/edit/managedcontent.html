@@ -1,0 +1,18 @@
+<section id="zero-content" class="clearfix">
+
+<form method="POST" action=".">
+  {{ form.as_p }}
+
+{% comment %}
+{% form_field form verbose_name %}
+{% form_field form name %}
+{% form_field form description %}
+{% form_field form authors %}
+{% endcomment %}
+
+{% csrf_token %}
+<input type='submit' value='Add'>
+</form>
+
+
+</section>

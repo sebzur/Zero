@@ -1,0 +1,44 @@
+<section id="zero-content" class="clearfix">
+        <div class="intro-box">
+
+{% if object_list %}
+
+<p>
+There are {{ object_list.count }} elements.
+</p>
+
+<table class="display" id="simple-table">
+<thead>
+<th>Project</th>
+<th>Issue</th>
+<th>Created by</th>
+<th>Created on</th>
+<th>Due date</th>
+<th>Due time</th>
+<th>Status</th>
+<th>Priority</th>
+<th>Category</th>
+</thead>
+<tbody>
+{% for task in object_list %}
+<tr>
+  <td><a href="{% url list_project_issues task.issue.project.id %}">{{ task.issue.project }}</a></td>
+  <td><a href="{% url issue_details task.issue.id %}">{{ task.issue.verbose_name }}</a></td>
+  <td>{{ task.get_author }}</td>
+  <td>{{ task.get_publication_datetime }}</td>
+  <td>{{ task.due_date|default:"Not provided" }}</td>
+  <td>{{ task.due_time|default:"Not provided" }}</td>
+  <td>{% if task.issue.comments.exists %}{{ task.issue.get_current_status }}{% else %}{{ task.issue.get_status }}{% endif %}</td>
+  <td>{{ task.issue.get_priority }}</td>
+  <td>{{ task.issue.get_category }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% else %}
+<p>
+  There are no tasks assigned to You.
+</p>
+{% endif %}
+</div>
+</section>

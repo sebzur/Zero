@@ -1,0 +1,19 @@
+Project "{{ instance.verbose_name }}" has been {{ created|yesno:"created,updated" }}.
+
+Publication info:
+--------------
+Author: {{ instance.get_author }}, publication date and time: {{ instance.get_publication_datetime }}
+
+Authors:
+--------------
+{% for author in instance.get_authors %}
+* {{ author }} | {{ author.email }}
+{% endfor %}
+
+Project description:
+------------------
+{{ instance.description }}
+
+URL
+------------------
+http://{{ site }}{% url list_project_issues instance.id %}

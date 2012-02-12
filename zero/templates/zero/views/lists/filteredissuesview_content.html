@@ -1,0 +1,58 @@
+<section>
+  <h1 style="float: left;" >{{ title|default:"No title was provided!" }}</h1>
+  <div style="float: right;" class="content-navigation">
+    {% for title, url in navlinks.iteritems %}
+    <a href="{{ url }}"><strong>{{ title }}</strong></a>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="zero-content" class="clearfix">
+<div>
+
+<div>
+  <form action="." method="POST">
+  {% csrf_token %}
+  {{ form }}
+  <input type="submit" value="Apply filter" />
+  </form>
+</div>
+
+{% if object_list %}
+<p>Number of elements found: <strong>{{ object_list.count }}</strong>.
+
+<table class="display" id='simple-table' >
+<thead>
+<th>Issue</th>
+<th>Brief</th>
+<th>Comments</th>
+<th>Author</th>
+<th>Publication</th>
+<th>Status</th>
+<th>Priority</th>
+<th>Category</th>
+</thead>
+<tbody>
+{% for issue in object_list %}
+<tr class="{% cycle "even" "odd" %}">
+<td><a href="{% url issue_details issue.id %}"><strong>{{ issue.verbose_name }}</strong></a></td>
+<td>{{ issue.description|truncatewords:5 }}</td>
+<td>{{ issue.comments.count }}</td>
+<td>{{ issue.get_author }}</td>
+<td>{{ issue.get_publication_datetime }}</td>
+<td class="{{ issue.get_current_status.name }}">{{ issue.get_current_status }}</td>
+<td>{{ issue.get_current_priority }}</td>
+<td>{{ issue.category }}</td>
+</tr>
+{% endfor %}
+</tr>
+</table>
+
+{% else %}
+<p>Zero was unable to find out any objects with the query You selected.
+</p>
+
+{% endif %}
+
+</div>
+</section>

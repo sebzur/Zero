@@ -1,0 +1,23 @@
+The task to issue "{{ instance.issue.verbose_name }}" has been {{ created|yesno:"created,updated" }}.
+
+Publication info:
+-----------------
+Author: {{ instance.get_author }}, publication date and time: {{ instance.get_publication_datetime }}
+
+Issue Status: 
+----------------
+Status: {% if instance.issue.comments.exists %}{{ instance.issue.get_current_status }}{% else %}{{ instance.issue.get_status }}{% endif %} | Priority: {{ instance.issue.get_priority }} | Category: {{ instance.issue.get_category }}
+
+
+Asignee information:
+-------------------
+Task was assigned by {{ instance.get_author }} to {{ instance.asignee }}
+
+
+Task description:
+------------------
+{{ instance.description|default:"Not provided" }}
+
+URL
+------------------
+http://{{ site }}{% url issue_details instance.issue.id %}

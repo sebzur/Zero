@@ -1,0 +1,19 @@
+The issue "{{ instance.verbose_name }}" has been {{ created|yesno:"created,updated" }}.
+
+Publication info:
+-----------------
+Author: {{ instance.get_author }}, publication date and time: {{ instance.get_publication_datetime }}
+Project: {{ instance.project }}
+
+Issue Status: 
+--------------
+Status: {% if instance.comments.exists %}{{ instance.get_current_status }}{% else %}{{ instance.get_status }}{% endif %} | Priority: {{ instance.get_priority }} | Category: {{ instance.get_category }}
+
+Issue description:
+------------------
+{{ instance.description }}
+
+URL
+------------------
+http://{{ site }}{% url issue_details instance.id %}
+

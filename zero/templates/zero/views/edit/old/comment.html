@@ -1,0 +1,14 @@
+{% extends "grains/node.html" %}
+{% load grains_forms %}
+{% block title %}ZERO project management (<span class="alert">in development</span>) {% endblock %}
+
+{% block body %}
+<form method="POST" action="">
+
+{% form_field form comment %}
+{% form_field form status %}
+{% form_field form priority %}
+{% csrf_token %}
+<input type='submit' value='Add'>
+</form>
+{% endblock %}

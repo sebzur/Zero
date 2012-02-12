@@ -1,0 +1,20 @@
+{% extends "grains/node.html" %}
+
+{% block title %}Delete object "{{ object }}" {% endblock %}
+{% block body %}
+
+<div id="details-navigation">
+   <ul>
+     <li> <a href="{% url list_projects %}">Projects</a></li>
+     <li> <a href="{{ cancel_url }}">Cancel & return </a></li>
+   </ul>
+</div>
+
+<p>
+  You are about to delete object "{{ object }}". Are you sure? This action can not be reverted!
+</p>
+<form method="POST" action="">
+  {% csrf_token %}
+<input type='submit' value='Delete'>
+</form>
+{% endblock %}

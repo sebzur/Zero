@@ -1,0 +1,51 @@
+
+
+.links{
+   border-top: 1px solid #BEC2C1;
+   margin-top: 5px;
+   padding: 5px;
+   float: right;
+}
+
+
+.button {
+    float: right;
+    background: #068BC3;
+    padding: 5px;
+    color: white;
+    font-weight: bold;
+    border-right: 1px solid white;
+}
+
+.button a{
+    margin-left: 5px;
+    color: white;
+}
+
+.butt-orange {
+    float: right;
+    background: #FFBB26;
+    padding: 5px;
+    color: #515151;
+    font-weight: bold;
+    border-right: 1px solid white;
+}
+
+
+.butt-orange a{
+    margin-left: 5px;
+    color: #515151;
+}
+
+
+.open {
+    background-color: red;
+    font-weight: bold;
+    color: white;
+}
+
+.fixed {
+    background-color: green;
+    font-weight: bold;
+    color: white;
+}

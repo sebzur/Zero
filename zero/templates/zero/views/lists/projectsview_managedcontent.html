@@ -1,0 +1,39 @@
+<section id="zero-content" class="clearfix">
+        <div class="intro-box">
+
+<p class="intro" >
+{% if object_list %}
+There are {{ object_list.count }} elements in the projects list. Click on the project name
+in table to brows its issues or search through the table with live filter.
+{% else %}
+   No projects have been found. You should add one!!
+{% endif %}
+   
+</p>
+
+{% if object_list %}
+
+<table class="display" id="simple-table">
+<thead>
+<th>Project</th>
+<th>Issues</th>
+<th>Authors</th>
+<th>Publication</th>
+</thead>
+<tbody>
+{% for project in object_list %}
+<tr>
+  <td><a href="{% url list_project_issues  project.id %}"><strong>{{ project }}</strong></a></td>
+  <td>{{ project.issues.count }}</td>
+  <td>{% for author in project.authors.all %}{{ author }}{% endfor %}</td>
+  <td>{{ project.get_publication_datetime }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+{% else %}
+
+{% endif %}
+</div>
+
+</section>

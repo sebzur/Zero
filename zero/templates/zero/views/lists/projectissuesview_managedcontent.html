@@ -1,0 +1,34 @@
+<section id="zero-content" class="clearfix">
+
+{% if object_list %}
+<p>There are {{ object_list.count }} elements registered.
+
+<table class="display" id="simple-table">
+<thead>
+<th>Issue</th>
+<th>Comments</th>
+<th>Publication</th>
+<th>Status</th>
+<th>Priority</th>
+<th>Category</th>
+</thead>
+<tbody>
+{% for issue in object_list %}
+<tr>
+<td><a href="{% url issue_details issue.id %}"><strong>{{ issue.verbose_name }}</strong></a></td>
+<td>{{ issue.comments.count }}</td>
+<td>{{ issue.get_publication_datetime }}</td>
+<td>{{ issue.get_current_status }}</td>
+<td>{{ issue.priority }}</td>
+<td>{{ issue.category }}</td>
+</tr>
+{% endfor %}
+</tr>
+</table>
+
+{% else %}
+
+{% endif %}
+
+
+</section>

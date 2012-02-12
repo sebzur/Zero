@@ -1,0 +1,36 @@
+<section id="zero-content" class="clearfix">
+        <div class="intro-box">
+
+{% if objects %}
+
+<p>
+There are {{ objects.count }} latest elements presented..
+</p>
+
+<table class="display" id="simple-table">
+<thead>
+<th>Project</th>
+<th>Issue</th>
+<th>Created by</th>
+<th>Created on</th>
+<th>Comment</th>
+</thead>
+<tbody>
+{% for obj in objects %}
+<tr>
+  <td><a href="{% url list_project_issues obj.issue.project.id %}">{{ obj.issue.project }}</a></td>
+  <td><a href="{% url issue_details obj.issue.id %}">{{ obj.issue.verbose_name }}</a></td>
+  <td>{{ obj.get_author }}</td>
+  <td>{{ obj.get_publication_datetime }}</td>
+  <td>{{ obj.comment }}</td>
+{% endfor %}
+</tbody>
+</table>
+
+{% else %}
+<p>
+  There are no tasks assigned to You.
+</p>
+{% endif %}
+</div>
+</section>

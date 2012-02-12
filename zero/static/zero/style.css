@@ -1,0 +1,33 @@
+#zero-content{
+    padding-top: 40px;
+}
+
+
+.issue-description{
+    border: 1px solid #BEC2C1;
+    padding: 10px;
+    background-color: #F4F8F7;
+}
+
+.comment-status-info{
+    border-bottom: 1px solid #BEC2C1;
+    padding: 0 0 5px 5px;
+    color: #BBBEBD;
+}
+
+.comment-action-link{
+    float: right;
+}
+
+.comment-action-link a{
+    color: #BBBEBD;
+}
+
+.comment-action-link a:hover{
+    color: black;
+}
+
+
+#tabs{
+    margin-top: 20px;
+}

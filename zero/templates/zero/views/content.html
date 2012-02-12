@@ -1,0 +1,12 @@
+{% load synergy_region %}
+<section>
+  <h1 style="float: left;" >{{ title|default:"No title was provided!" }}</h1>
+  <div style="float: right;" class="content-navigation">
+    {% for title, url in navlinks.iteritems %}
+    <a href="{{ url }}"><strong>{{ title }}</strong></a>
+    {% endfor %}
+  </div>
+</section>
+
+{% region managedcontent %}
+{% endregion %}

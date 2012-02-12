@@ -1,0 +1,64 @@
+<section id="zero-content" class="clearfix">
+
+<p class="publication-info">
+ <strong>{{ object.get_author }}</strong>|{{ object.get_publication_datetime }}
+
+ <strong>{{ object.get_status }}</strong> {% if object.comments.exists %}&raquo {{ object.get_current_status }} {% endif %}| {{ object.get_priority }} | {{ object.get_category }}
+</p>
+
+<p class="issue-description">
+{{ object.description|linebreaksbr }}
+</p>
+
+<div class="content-navigation">
+  <a href="{% url create_issue_comment object.id %}">Add comment</a>
+  <a  href="{% url create_task object.id %}">Assign task</a>
+</div>
+
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">Comments ({{ object.comments.count }})</a></li>
+    <li><a href="#tabs-2">Tasks ({{ object.tasks.count }})</a></li>
+  </ul>
+  <div id="tabs-1">
+    {% for comment in object.comments.all %}
+    <div class="comment clearfix" >
+
+      <p class="comment-status-info">
+	<strong>{{ comment.get_author }}</strong>, {{ comment.get_publication_datetime }}
+
+      <span class="comment-action-link">
+	<a href="{% url delete_object 'comment' comment.id %}">Usuń</a>
+	| <a href="{% url edit_comment comment.id %}">Edytuj</a>
+      </span>
+
+      </p>
+
+      <p class="comment-content">
+	{{ comment.comment|linebreaksbr }} 
+      </p>
+    </div>
+    {% empty %}
+    There are <strong>no</strong> comments for this object.
+    {% endfor %}
+  </div>
+
+  <div id="tabs-2">
+    {% if object.tasks.exists %}
+    <ul>
+      {% for task in object.tasks.all %}
+      <li>
+	<a href="{% url edit_task task.id %}"><strong>{{ task.asignee }}</strong>, created on {{ task.get_publication_datetime }} by {{ task.get_author }}</a>
+	({{ task.description|default:"No description provided" }}) | Due date: <strong>{{ task.due_date|default:"Not provided" }}</strong> | Due time: <strong>{{ task.due_time|default:"Not provided" }} </strong>
+	(<a href="{% url delete_object 'task' task.id %}">Usuń</a>)
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    There are <strong>no</strong> related tasks.
+    {% endif %}
+  </div>
+</div>
+
+
+</section>
