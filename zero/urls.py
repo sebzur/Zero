@@ -24,7 +24,7 @@ urlpatterns = patterns('',
                        url(r'^issue/(?P<issue_id>\d+)/tasks/create/$', edit.CreateTaskView.as_view(), name="create_task"),
                        url(r'^task/(?P<pk>\d+)/edit/$', edit.UpdateTaskView.as_view(), name="edit_task"),
                        # TASK
-                       url(r'^tasks/(?P<status>.+)/$', lists.TasksView.as_view(), name='list_tasks'),
+                       url(r'^tasks/(?P<status>open|closed)/$', lists.TasksView.as_view(), name='list_tasks'),
                        # Generic handlers
                        url(r'^delete/(?P<model>.+)/(?P<pk>\d+)/$', edit.DeleteObjectView.as_view(), name="delete_object"),
 )

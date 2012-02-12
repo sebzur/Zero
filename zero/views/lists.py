@@ -44,7 +44,7 @@ class ProjectIssuesView(RegionViewMixin, ListView):
 class TasksView(RegionViewMixin, ListView):
     model = get_model('zero', 'Task')
 
-    def get_queryset(self):
+    def _get_queryset(self):
         queryset = super(TasksView, self).get_queryset().filter(asignee=self.request.user)
         name = self.kwargs.get('status')
 
@@ -61,11 +61,15 @@ class TasksView(RegionViewMixin, ListView):
         queryset = queryset.filter(id__in=itertools.chain(with_comments, without_comments))
 
         return queryset
+
+    def get_queryset(self):
+        is_open = {'open': True, 'closed': False}.get(self.kwargs.get('status'))
+        return super(TasksView, self).get_queryset().filter(asignee=self.request.user, accomplished_date__isnull=is_open)
         
     def get_context_data(self, **kwargs):
         context = super(TasksView, self).get_context_data(**kwargs)
         context['title'] = "Tasks list"
-        filters = dict(('%s' % status.verbose_name, reverse('list_tasks', args=[status.name]))  for status in get_model("zero", "Status").objects.all())
+        filters = dict(('%s' % status, reverse('list_tasks', args=[status.lower()]))  for status in ('Open', 'Closed'))
         context['navlinks'] = filters
         return context
 

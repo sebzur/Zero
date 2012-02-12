@@ -15,9 +15,10 @@ There are {{ object_list.count }} elements.
 <th>Created on</th>
 <th>Due date</th>
 <th>Due time</th>
-<th>Status</th>
-<th>Priority</th>
-<th>Category</th>
+<th>Issue Status</th>
+<th>Issue Priority</th>
+<th>Issue Category</th>
+<th>Time spent</th>
 </thead>
 <tbody>
 {% for task in object_list %}
@@ -31,6 +32,7 @@ There are {{ object_list.count }} elements.
   <td>{% if task.issue.comments.exists %}{{ task.issue.get_current_status }}{% else %}{{ task.issue.get_status }}{% endif %}</td>
   <td>{{ task.issue.get_priority }}</td>
   <td>{{ task.issue.get_category }}</td>
+  <td>{{ task.time_spent|default_if_none:"0" }}</td>
 </tr>
 {% endfor %}
 </tbody>
