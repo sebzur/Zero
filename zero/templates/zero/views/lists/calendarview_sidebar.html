@@ -1,0 +1,18 @@
+{% include 'zero/views/sidebar.html' %}
+
+<div id='external-events'>
+<h4>Free Events</h4>
+{% if tasks %}
+<p>
+  There are some events registered. Drag and drop them into the calendar.
+</p>
+{% for task in tasks %}
+<div class='external-event' id="{{ task.id }}">{{ task.get_title }}</div>
+{% endfor %}
+{% else %}
+<p>
+  There are no free (not assigned to any deadline) events
+</p>
+{% endif %}
+
+</div>

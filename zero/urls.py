@@ -3,7 +3,7 @@ from django.conf.urls.defaults import *
 from zero.views import lists, edit, details
 
 urlpatterns = patterns('',
-                       url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'pageone/login.html'}, name='login'),
+                       url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'grains2/login.html'}, name='login'),
                        url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}, name='logout'),
                        # Dashboard
                        url(r'^dashboard/(?P<model>issue|comment)/$', lists.Dashboard.as_view(), name='dashboard'),
@@ -25,6 +25,10 @@ urlpatterns = patterns('',
                        url(r'^task/(?P<pk>\d+)/edit/$', edit.UpdateTaskView.as_view(), name="edit_task"),
                        # TASK
                        url(r'^tasks/(?P<status>open|closed)/$', lists.TasksView.as_view(), name='list_tasks'),
+                       url(r'^calendar/$', lists.CalendarView.as_view(), name='calendar'),
+                       url(r'^json-events/$', lists.JSONEventsView.as_view(), name='json_events'),
+                       url(r'^create-deadline/(?P<model>task|issue)/(?P<pk>\d+)/$', edit.CreateDeadlineView.as_view(), name='create_deadline'),
+                       url(r'^update-deadline/(?P<model>task|issue)/(?P<pk>\d+)/$', edit.UpdateDeadlineView.as_view(), name='update_deadline'),
                        # Generic handlers
                        url(r'^delete/(?P<model>.+)/(?P<pk>\d+)/$', edit.DeleteObjectView.as_view(), name="delete_object"),
 )

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import CreateView, UpdateView, DeleteView, FormView, View
 from django.db.models import get_model
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django import  forms
 from django.template.defaultfilters import slugify
+import datetime
 
 
 from synergy.templates.regions.views import RegionViewMixin
@@ -275,3 +276,25 @@ class DeleteObjectView(DeleteView):
         context['cancel_url'] = reverse(reverse_names[self.kwargs.get('model')][0], args=[attr])
 
         return context
+
+
+class CreateDeadlineView(View):
+    def post(self, request, *args, **kwargs):
+        obj = get_model('zero', self.kwargs.get('model')).objects.get(id=self.kwargs.get('pk'))
+        obj.due_date = datetime.date(int(request.POST.get('year')), int(request.POST.get('month')), int(request.POST.get('day')))
+        #obj.due_time = datetime.time(int(request.POST.get('year')), int(request.POST.get('month')), int(request.POST.get('day')))
+        obj.save()
+        
+        return HttpResponse()
+
+class UpdateDeadlineView(View):
+    def post(self, request, *args, **kwargs):
+        obj = get_model('zero', self.kwargs.get('model')).objects.get(id=self.kwargs.get('pk'))
+        obj.due_date += datetime.timedelta(days=int(request.POST.get('days')))
+        if obj.due_time:
+            obj.due_time += datetime.timedelta(minutes=int(request.POST.get('minutes')))
+        if request.POST.get('all_day') == 'true':
+            obj.due_time = None
+        obj.save()
+        return HttpResponse()
+

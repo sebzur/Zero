@@ -17,5 +17,5 @@ def send_notification(instance, created):
         # email.content_subtype = "html"
         # email.attach_file(bkp_path)
 
-        #if not settings.DEBUG:
-        email.send()
+        if not settings.DEBUG:
+            email.send()

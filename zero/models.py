@@ -110,9 +110,17 @@ class Task(EntryInfoMixin, models.Model):
     due_date = models.DateField(verbose_name="Due date", null=True, blank=True)
     due_time = models.TimeField(verbose_name="Due time", null=True, blank=True)
     description = models.TextField(verbose_name="Description", blank=True)
-    time_spent = models.PositiveIntegerField(verbose_name="Mintutes spent", null=True, blank=True)
+    time_spent = models.PositiveIntegerField(verbose_name="Minutes spent", null=True, blank=True)
     accomplished_date = models.DateField(verbose_name="Accomplished date", null=True, blank=True)
     entry_info = generic.GenericRelation(EntryInfo)    
+
+    def get_title(self):
+        return "%s: %s (%s, %s)" % (self.asignee, self.description, self.issue.verbose_name, self.issue.project.verbose_name)
+
+    def get_status(self):
+        if self.accomplished_date:
+            return 'accomplished'
+        return 'pending'
 
     def get_subscribers(self):
         return [author.email for author in self.issue.project.authors.all()]

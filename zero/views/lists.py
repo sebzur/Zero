@@ -6,12 +6,32 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 
 from django.views.generic.edit import FormView, FormMixin, BaseFormView, ProcessFormView
+from django.views.generic import View
 from zero import forms
 from django.utils.encoding import smart_unicode, smart_str 
 
 from synergy.templates.regions.views import RegionViewMixin
 
 import itertools
+import datetime
+from django.utils import simplejson
+
+from django.core.context_processors import csrf
+
+class CalendarView(RegionViewMixin, ListView):
+    model = get_model('zero', 'Project')
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super(CalendarView, self).get_context_data(*args, **kwargs)
+        ctx['title'] = 'Calendar'
+        ctx['tasks'] = get_model('zero','task').objects.filter(Q(asignee=self.request.user)|Q(entry_info__author=self.request.user), due_date__isnull=True,
+                                                               accomplished_date__isnull=True).distinct()
+ 
+
+        ctx.update(csrf(self.request))       
+       #ctx['navlinks'] = {'Add new project': reverse('create_project')}
+        return  ctx
+
 
 class ProjectsView(RegionViewMixin, ListView):
     model = get_model('zero','Project')
@@ -45,7 +65,7 @@ class TasksView(RegionViewMixin, ListView):
     model = get_model('zero', 'Task')
 
     def _get_queryset(self):
-        queryset = super(TasksView, self).get_queryset().filter(asignee=self.request.user)
+        queryset = super(TasksView, self).get_queryset().filter(Q(asignee=self.request.user)|Q(entry_info__author=self.request.user))
         name = self.kwargs.get('status')
 
         latests_comments = get_model('zero', 'Comment').objects.get_latests()
@@ -165,3 +185,60 @@ class Dashboard(RegionViewMixin, TemplateView):
         ctx['objects'] = self.get_objects()
         ctx['region_postfixes'] = {'managedcontent': self.kwargs.get('model')}
         return  ctx
+
+
+
+class JSONResponseMixin(object):
+    def render_to_response(self, context):
+        "Returns a JSON response containing 'context' as payload"
+        return self.get_json_response(self.convert_context_to_json(context))
+
+    def get_json_response(self, content, **httpresponse_kwargs):
+        "Construct an `HttpResponse` object."
+        return HttpResponse(content,
+                                 content_type='application/json',
+                                 **httpresponse_kwargs)
+
+    def convert_context_to_json(self, context):
+        "Convert the context dictionary into a JSON object"
+        # Note: This is *EXTREMELY* naive; in reality, you'll need
+        # to do much more complex handling to ensure that arbitrary
+        # objects -- such as Django model instances or querysets
+        # -- can be serialized as JSON.
+        return simplejson.dumps(context)
+
+    def get_date(self, value_str):
+        """ value_str is {'start','end'} """
+        return datetime.date.fromtimestamp(float(self.request.GET[value_str]))
+
+
+class JSONEventsView(JSONResponseMixin, View):
+    """
+    A view that renders a template.
+    """
+    def get_context_data(self, **kwargs):
+        return self.format_list(self.get_results(**kwargs))
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
+    def get_results(self, **kwargs):
+        # instancje
+        objs = get_model('zero', 'Task').objects.filter(Q(asignee=self.request.user)|Q(entry_info__author=self.request.user),
+                                                        due_date__gte=self.get_date('start'), 
+                                                        due_date__lte=self.get_date('end'),
+                                                        ).distinct()
+        return objs 
+
+    def format_list(self, results):
+        try:
+            results = [ {'id': x.id, 
+                         'title': u"%s" % x.get_title(),
+                         'start': "%s" % x.due_date,
+                         'className': '%s' % x.get_status(),
+                         'url': reverse("edit_task", args = [x.id])} for i, x in enumerate(results)
+                        ]
+        except Exception, r:
+            print r
+        return results
