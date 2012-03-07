@@ -10,6 +10,7 @@ from zero.notify import send_notification
 from django.dispatch import receiver
 
 import itertools
+import datetime
 
 
 #TODO multilanguage
@@ -113,6 +114,24 @@ class Task(EntryInfoMixin, models.Model):
     time_spent = models.PositiveIntegerField(verbose_name="Minutes spent", null=True, blank=True)
     accomplished_date = models.DateField(verbose_name="Accomplished date", null=True, blank=True)
     entry_info = generic.GenericRelation(EntryInfo)    
+
+
+    def get_start(self):
+        if self.due_time:
+            year = self.due_date.year
+            month = self.due_date.month
+            day = self.due_date.day
+            hour = self.due_time.hour
+            minute = self.due_time.minute
+            return datetime.datetime(year, month, day, hour, minute)
+        return self.due_date
+
+    def get_end(self):
+        if self.due_time:
+            time_spent = self.time_spent or 0 
+            return self.get_start() + datetime.timedelta(minutes=time_spent)
+        return self.get_start()
+
 
     def get_title(self):
         return "%s: %s (%s, %s)" % (self.asignee, self.description, self.issue.verbose_name, self.issue.project.verbose_name)

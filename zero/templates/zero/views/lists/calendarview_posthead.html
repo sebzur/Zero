@@ -35,7 +35,7 @@ $('#external-events div.external-event').each(function() {
   header: {
   left: 'prev,next today',
   center: 'title',
-  right: 'month,basicWeek,basicDay'
+  right: 'month,agendaWeek,agendaDay'
   },
 
   eventSources: [{url: '{% url json_events %}'}],
@@ -77,6 +77,23 @@ drop: function(date, allDay) { // this function is called when something is drop
  
   },
 
+
+eventResize: function(event,dayDelta,minuteDelta,revertFunc) {
+    $.ajax
+                    ({
+                        url: '/update-deadline/task/'+event.id+'/',
+                        type: 'POST',
+                        data: { 'days': 0,
+                                'minutes': 0,
+                                'duration_minutes': minuteDelta,
+                                'duration_days': dayDelta,
+                                'all_day': false,
+                                 'csrfmiddlewaretoken': '{{ csrf_token }}' }
+                    });
+
+
+    },
+
 eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
     $.ajax
                     ({
@@ -84,6 +101,8 @@ eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
                         type: 'POST',
                         data: { 'days': dayDelta,
                                 'minutes': minuteDelta,
+                                'duration_minutes': 0,
+                                'duration_days': 0,
                                 'all_day': allDay,
                                  'csrfmiddlewaretoken': '{{ csrf_token }}' }
                     });

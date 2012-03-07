@@ -235,10 +235,13 @@ class JSONEventsView(JSONResponseMixin, View):
         try:
             results = [ {'id': x.id, 
                          'title': u"%s" % x.get_title(),
-                         'start': "%s" % x.due_date,
+                         'start': x.get_start().isoformat(),
+                         'end': x.get_end().isoformat(),
+                         'allDay': False,
                          'className': '%s' % x.get_status(),
                          'url': reverse("edit_task", args = [x.id])} for i, x in enumerate(results)
                         ]
+            print results
         except Exception, r:
             print r
         return results

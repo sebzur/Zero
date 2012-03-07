@@ -291,8 +291,31 @@ class UpdateDeadlineView(View):
     def post(self, request, *args, **kwargs):
         obj = get_model('zero', self.kwargs.get('model')).objects.get(id=self.kwargs.get('pk'))
         obj.due_date += datetime.timedelta(days=int(request.POST.get('days')))
-        if obj.due_time:
-            obj.due_time += datetime.timedelta(minutes=int(request.POST.get('minutes')))
+
+
+        minutes = int(request.POST.get('minutes'))
+        if minutes:
+            year = obj.due_date.year
+            month = obj.due_date.month
+            day = obj.due_date.day
+            if obj.due_time:
+                hour = obj.due_time.hour
+                minute = obj.due_time.minute
+            else:
+                hour = 0
+                minute = 0
+            dt = datetime.datetime(year, month, day, hour, minute) + datetime.timedelta(minutes=minutes)
+            obj.due_time = dt.time()
+
+
+        duration =  int(request.POST.get('duration_minutes'))
+        if duration:
+            if obj.time_spent:
+                obj.time_spent += duration
+            else:
+                obj.time_spent = duration
+
+        
         if request.POST.get('all_day') == 'true':
             obj.due_time = None
         obj.save()
